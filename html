@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>StreamFlix — Home</title>
+<style>
+  :root{
+    --bg:#0b0b0b;
+    --card:#111;
+    --muted:#9aa3b2;
+    --accent:#e50914; /* red-ish */
+    --glass: rgba(255,255,255,0.06);
+    --glass-2: rgba(255,255,255,0.03);
+    --max-width:1200px;
+    --radius:10px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background:linear-gradient(180deg,#050505 0%, #0b0b0b 100%);
+    color:#fff;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+  }
+
+  /* Header */
+  header{
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    z-index:50;
+    height:68px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 24px;
+    background:linear-gradient(180deg, rgba(0,0,0,0.65), rgba(0,0,0,0.2));
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+  }
+  .brand{
+    display:flex;
+    gap:16px;
+    align-items:center;
+  }
+  .logo {
+    width:36px;height:36px;
+    background:var(--accent);
+    border-radius:6px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:800;
+    font-size:18px;
+    color:white;
+    box-shadow:0 4px 18px rgba(229,9,20,0.25);
+  }
+  nav{display:flex; gap:14px; align-items:center; font-size:15px}
+  nav a{color:rgba(255,255,255,0.85); text-decoration:none; padding:8px 10px; border-radius:6px;}
+  nav a:hover{background:rgba(255,255,255,0.03)}
+  .right-actions{display:flex; align-items:center; gap:12px}
+  .search{
+    width:36px;height:36px;border-radius:8px;background:var(--glass);
+    display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--muted);
+  }
+  .signin{
+    background:transparent;border:1px solid rgba(255,255,255,0.08); padding:8px 12px;border-radius:8px;color:white;text-decoration:none;font-weight:600;
+  }
+
+  /* Hero */
+  .hero{
+    margin-top:68px;
+    height:62vh;
+    min-height:420px;
+    display:flex;
+    align-items:flex-end;
+    position:relative;
+    padding:36px 24px;
+    overflow:hidden;
+  }
+  .hero::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+      radial-gradient(600px 200px at 10% 30%, rgba(255,0,0,0.08), transparent 12%),
+      linear-gradient(180deg, rgba(0,0,0,0.0) 0%, rgba(0,0,0,0.75) 40%),
+      linear-gradient(90deg, rgba(5,5,5,0.1), rgba(0,0,0,0.5));
+    mix-blend-mode:normal;
+    z-index:0;
+  }
+  .hero .content{
+    position:relative; z-index:2;
+    max-width:var(--max-width); margin:0 auto; width:100%;
+    display:flex; gap:24px; align-items:flex-end;
+  }
+  .hero .text{
+    width:60%;
+    padding:40px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-radius:12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    border:1px solid rgba(255,255,255,0.02);
+  }
+  .hero h1{
+    margin:0 0 8px 0; font-size:40px; letter-spacing:-0.02em;
+  }
+  .hero p{margin:0 0 18px 0; color:var(--muted); line-height:1.4}
+  .cta{
+    display:flex; gap:12px;
+  }
+  .btn{
+    background:var(--accent); color:white; padding:12px 18px; border-radius:8px; font-weight:700; text-decoration:none;
+    box-shadow:0 8px 18px rgba(229,9,20,0.18);
+  }
+  .btn.secondary{
+    background:transparent; border:1px solid rgba(255,255,255,0.08); color: #fff; font-weight:600;
+  }
+
+  /* Rows */
+  main{padding:28px 18px 80px; max-width:var(--max-width); margin:0 auto;}
+  .row{margin-bottom:22px}
+  .row h3{margin:0 0 12px 6px; font-size:18px}
+  .cards{
+    display:flex; gap:12px; overflow-x:auto; padding-bottom:8px;
+    scrollbar-width:none; -ms-overflow-style:none;
+  }
+  .cards::-webkit-scrollbar{display:none}
+
+  .card{
+    min-width:200px; height:120px; flex:0 0 auto; border-radius:8px; position:relative; overflow:hidden;
+    background:linear-gradient(180deg, #1a1a1a, #0f0f0f);
+    border:1px solid rgba(255,255,255,0.03);
+    display:flex; align-items:flex-end; padding:12px; cursor:pointer;
+    transition: transform .18s ease, box-shadow .18s ease;
+  }
+  .card:hover{ transform: translateY(-10px) scale(1.03); box-shadow:0 16px 40px rgba(0,0,0,0.5); }
+  .card .title{font-weight:700; font-size:14px}
+  .card .meta{font-size:12px;color:var(--muted); margin-top:6px}
+  .poster{
+    position:absolute; inset:0; background-image: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.5)); z-index:0;
+    display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,0.15); font-weight:800; font-size:34px;
+  }
+  .card .info{ position:relative; z-index:2; color:white; text-shadow:0 2px 8px rgba(0,0,0,0.6);}
+
+  /* small screens */
+  @media (max-width:880px){
+    .hero .text{width:100%; padding:24px}
+    .hero h1{font-size:28px}
+    .card{min-width:150px; height:110px}
+  }
+
+  /* Modal (Trailer) */
+  .modal {
+    position:fixed; inset:0; display:none; align-items:center; justify-content:center; z-index:80;
+    background:rgba(0,0,0,0.65);
+  }
+  .modal.open{display:flex}
+  .modal .panel{
+    width:90%; max-width:900px; background: #000; border-radius:10px; overflow:hidden; border:1px solid rgba(255,255,255,0.06);
+  }
+  .modal .panel .head{
+    display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background: #0b0b0b;
+    border-bottom:1px solid rgba(255,255,255,0.03);
+  }
+  .modal .panel .body{padding:0; background:black}
+  .close-btn{ background:transparent; border:0; color:#fff; font-weight:700; font-size:20px; cursor:pointer; }
+
+  /* footer */
+  footer{padding:28px; color:var(--muted); text-align:center; margin-top:34px; font-size:13px}
+
+  /* helper styles for placeholder posters (different color variants) */
+  .p-1{background:linear-gradient(135deg,#2b2f6e,#782848)}
+  .p-2{background:linear-gradient(135deg,#1b2a41,#7b3a2e)}
+  .p-3{background:linear-gradient(135deg,#2a3a1b,#6ea03f)}
+  .p-4{background:linear-gradient(135deg,#3a1b3a,#b04c9a)}
+  .p-5{background:linear-gradient(135deg,#173a57,#2fb5d4)}
+  .badge{position:absolute; top:8px; left:8px; font-size:11px; background:rgba(0,0,0,0.45); padding:6px 8px; border-radius:6px}
+  .small-meta{position:absolute; right:8px; bottom:8px; font-size:12px; color:rgba(255,255,255,0.9)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand" aria-hidden="false">
+    <div class="logo" title="StreamFlix">SF</div>
+    <nav aria-label="Main navigation">
+      <a href="#" tabindex="1">Home</a>
+      <a href="#" tabindex="2">TV Shows</a>
+      <a href="#" tabindex="3">Movies</a>
+      <a href="#" tabindex="4">My List</a>
+    </nav>
+  </div>
+  <div class="right-actions">
+    <div class="search" title="Search" role="button" tabindex="5">🔍</div>
+    <a class="signin" href="#" tabindex="6">Sign In</a>
+  </div>
+</header>
+
+<section class="hero" aria-label="Featured">
+  <div class="content">
+    <div class="text" role="region" aria-labelledby="hero-title">
+      <h1 id="hero-title">Watch the latest, binge-worthy shows</h1>
+      <p>Stream top-rated series and movies, personalized recommendations and new releases added weekly.</p>
+      <div class="cta">
+        <a class="btn" id="play-feature" href="#" role="button" aria-haspopup="dialog">▶ Play Trailer</a>
+        <a class="btn secondary" href="#" onclick="scrollToRows()">Browse Catalog</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<main id="catalog" aria-label="Catalog">
+  <!-- Row 1 -->
+  <section class="row" aria-labelledby="row1">
+    <h3 id="row1">Popular on StreamFlix</h3>
+    <div class="cards">
+      <article class="card" tabindex="7" data-title="Crimson Skies" data-desc="Action • 2024" data-trailer="">
+        <div class="poster p-1">CS</div>
+        <div class="info">
+          <div class="title">Crimson Skies</div>
+          <div class="meta">Action • 2024</div>
+          <div class="small-meta">8.4</div>
+        </div>
+      </article>
+
+      <article class="card" tabindex="8" data-title="Midnight Echo" data-desc="Thriller • 2023">
+        <div class="poster p-2">ME</div>
+        <div class="info">
+          <div class="title">Midnight Echo</div>
+          <div class="meta">Thriller • 2023</div>
+          <div class="small-meta">7.9</div>
+        </div>
+      </article>
+
+      <article class="card" tabindex="9" data-title="Green Frontier" data-desc="Documentary • 2022">
+        <div class="poster p-3">GF</div>
+        <div class="info">
+          <div class="title">Green Frontier</div>
+          <div class="meta">Documentary • 2022</div>
+          <div class="small-meta">9.0</div>
+        </div>
+      </article>
+
+      <article class="card" tabindex="10" data-title="Neon Alley" data-desc="Sci-fi • 2021">
+        <div class="poster p-4">NA</div>
+        <div class="info">
+          <div class="title">Neon Alley</div>
+          <div class="meta">Sci-fi • 2021</div>
+          <div class="small-meta">8.1</div>
+        </div>
+      </article>
+
+      <article class="card" tabindex="11" data-title="Ocean Eyes" data-desc="Romance • 2024">
+        <div class="poster p-5">OE</div>
+        <div class="info">
+          <div class="title">Ocean Eyes</div>
+          <div class="meta">Romance • 2024</div>
+          <div class="small-meta">7.4</div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Row 2 -->
+  <section class="row" aria-labelledby="row2">
+    <h3 id="row2">Recently Added</h3>
+    <div class="cards">
+      <!-- duplicate cards to show horizontal overflow -->
+      <article class="card p-1" tabindex="12" data-title="Skyline Heist" data-desc="Crime • 2023">
+        <div class="poster p-1">SH</div>
+        <div class="info"><div class="title">Skyline Heist</div><div class="meta">Crime • 2023</div></div>
+      </article>
+      <article class="card p-2" tabindex="13" data-title="The Luminous" data-desc="Fantasy • 2022">
+        <div class="poster p-2">TL</div>
+        <div class="info"><div class="title">The Luminous</div><div class="meta">Fantasy • 2022</div></div>
+      </article>
+      <article class="card p-3" tabindex="14" data-title="Cooking With Stars" data-desc="Reality • 2020">
+        <div class="poster p-3">CS</div>
+        <div class="info"><div class="title">Cooking With Stars</div><div class="meta">Reality • 2020</div></div>
+      </article>
+      <article class="card p-4" tabindex="15" data-title="Hollow Road" data-desc="Horror • 2019">
+        <div class="poster p-4">HR</div>
+        <div class="info"><div class="title">Hollow Road</div><div class="meta">Horror • 2019</div></div>
+      </article>
+      <article class="card p-5" tabindex="16" data-title="City of Lights" data-desc="Drama • 2021">
+        <div class="poster p-5">CL</div>
+        <div class="info"><div class="title">City of Lights</div><div class="meta">Drama • 2021</div></div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Row 3 -->
+  <section class="row" aria-labelledby="row3">
+    <h3 id="row3">Because you watched Neon Alley</h3>
+    <div class="cards">
+      <article class="card" tabindex="17" data-title="Circuit Run" data-desc="Action • 2022"><div class="poster p-4">CR</div><div class="info"><div class="title">Circuit Run</div><div class="meta">Action • 2022</div></div></article>
+      <article class="card" tabindex="18" data-title="Parallel State" data-desc="Sci-fi • 2020"><div class="poster p-5">PS</div><div class="info"><div class="title">Parallel State</div><div class="meta">Sci-fi • 2020</div></div></article>
+      <article class="card" tabindex="19" data-title="The Last Orbit" data-desc="Sci-fi • 2023"><div class="poster p-1">LO</div><div class="info"><div class="title">The Last Orbit</div><div class="meta">Sci-fi • 2023</div></div></article>
+      <article class="card" tabindex="20" data-title="Afterlight" data-desc="Thriller • 2024"><div class="poster p-2">AL</div><div class="info"><div class="title">Afterlight</div><div class="meta">Thriller • 2024</div></div></article>
+    </div>
+  </section>
+</main>
+
+<!-- Trailer Modal -->
+<div class="modal" id="trailerModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="panel" role="document">
+    <div class="head">
+      <div id="modalTitle">Trailer</div>
+      <div>
+        <button class="close-btn" id="closeModal" aria-label="Close trailer">✕</button>
+      </div>
+    </div>
+    <div class="body" id="modalBody">
+      <!-- video placeholder / embed area -->
+      <div style="position:relative;padding-top:56.25%;">
+        <iframe id="videoFrame" src="" title="Trailer player" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allow="autoplay; fullscreen"></iframe>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  © StreamFlix • Demo UI — not affiliated with any streaming service. Built for learning.
+</footer>
+
+<script>
+  // small helper to smooth scroll to catalog
+  function scrollToRows(){
+    document.getElementById('catalog').scrollIntoView({behavior:'smooth'});
+  }
+
+  // open modal & play: for demo we use placeholder YouTube trailer (or just show blank)
+  const playBtn = document.getElementById('play-feature');
+  const modal = document.getElementById('trailerModal');
+  const closeModal = document.getElementById('closeModal');
+  const videoFrame = document.getElementById('videoFrame');
+
+  // Demo trailer (public youtube embed). You can change to any public video id.
+  const demoTrailer = "https://www.youtube.com/embed/ysz5S6PUM-U?autoplay=1";
+
+  playBtn.addEventListener('click', (e)=>{
+    e.preventDefault();
+    openTrailer(demoTrailer, 'StreamFlix Featured Trailer');
+  });
+
+  // allow clicking on cards to open a small info + trailer
+  document.querySelectorAll('.card').forEach(card=>{
+    card.addEventListener('click', (e)=>{
+      const title = card.getAttribute('data-title') || 'Trailer';
+      // In a real site you'd have a trailer URL per content item.
+      openTrailer(demoTrailer, title + ' — Trailer');
+    });
+    // keyboard support
+    card.addEventListener('keydown', (ev)=>{
+      if(ev.key === 'Enter' || ev.key === ' '){
+        ev.preventDefault();
+        card.click();
+      }
+    });
+  });
+
+  function openTrailer(url, title){
+    videoFrame.src = url;
+    document.getElementById('modalTitle').textContent = title;
+    modal.classList.add('open');
+    // trap focus: focus close button
+    closeModal.focus();
+  }
+
+  closeModal.addEventListener('click', ()=>{
+    closeTrailer();
+  });
+
+  modal.addEventListener('click', (ev)=>{
+    if(ev.target === modal) closeTrailer();
+  });
+
+  function closeTrailer(){
+    modal.classList.remove('open');
+    videoFrame.src = '';
+  }
+
+  // Escape to close modal
+  document.addEventListener('keydown', (e)=>{
+    if(e.key === 'Escape' && modal.classList.contains('open')) closeTrailer();
+  });
+
+  // Tiny accessibility improvement: focus outlines for keyboard users only
+  (function(){
+    function handleFirstTab(e) {
+      if (e.key === 'Tab') {
+        document.body.classList.add('show-focus');
+        window.removeEventListener('keydown', handleFirstTab);
+      }
+    }
+    window.addEventListener('keydown', handleFirstTab);
+  })();
+</script>
+
+</body>
+</html>
